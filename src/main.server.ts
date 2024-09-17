@@ -1,7 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
+import { PrediccionTiempoComponent } from './app/componentes/prediccion-tiempo/prediccion-tiempo.component';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 
-const bootstrap = () => bootstrapApplication(AppComponent, config);
+// Registrar datos de localización para "es-ES"
+registerLocaleData(localeEs, 'es-ES');
+
+const bootstrap = () => bootstrapApplication(PrediccionTiempoComponent, config);
 
 export default bootstrap;

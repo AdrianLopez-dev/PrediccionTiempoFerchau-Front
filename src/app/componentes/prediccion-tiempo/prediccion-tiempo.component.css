@@ -1,0 +1,75 @@
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.mat-spinner {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-busqueda{
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.tarjeta-tiempo {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.encabezado-tiempo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.selector-unidad {
+    width: 80px;
+}
+
+.informacion-tiempo h2 {
+    margin: 0;
+}
+
+.temperatura {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.temperatura h1 {
+    font-size: 4rem;
+    margin: 0;
+}
+
+.temperatura mat-icon {
+    font-size: 3rem;
+    margin-left: 10px;
+    color: orange;
+}
+
+.precipitacion {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.item-precipitacion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item-precipitacion mat-icon {
+    color: lightblue;
+}
+
+.item-precipitacion span {
+    margin-top: 5px;
+}

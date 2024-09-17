@@ -1,0 +1,70 @@
+<mat-card class="tarjeta-tiempo">
+  <div class="encabezado-tiempo">
+    <!-- Búsqueda con filtro -->
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar Municipio</mat-label>
+      <input
+        matInput
+        [formControl]="filtroControl"
+        [matAutocomplete]="auto"
+        placeholder="Municipio"
+      />
+      <button mat-icon-button matSuffix class="boton-busqueda">
+        <mat-icon>search</mat-icon>
+      </button>
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="seleccionarMunicipio($event.option.value)"
+      >
+        <mat-option
+          *ngFor="let municipio of municipiosFiltrados | async"
+          [value]="municipio"
+        >
+          {{ municipio.nombre }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="selector-unidad">
+      <mat-select
+        [(value)]="unidadTemperaturaSeleccionada"
+        (selectionChange)="onTemperatureChange()"
+      >
+        <mat-option value="G_CEL">°C</mat-option>
+        <mat-option value="G_FAH">°F</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Loader que se muestra mientras se cargan los datos -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!!municipioSeleccionado && !isLoading">
+    <!-- Información del clima -->
+    <div class="informacion-tiempo">
+      <h2>{{ municipioSeleccionado?.nombre }}</h2>
+      <p>{{ fecha }}</p>
+
+      <div class="temperatura">
+        <h1>{{ temperaturaMedia }}</h1>
+        <span>{{
+          unidadTemperaturaSeleccionada == "G_CEL" ? "°C" : "°F"
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Probabilidad de lluvia dinámica -->
+    <div class="precipitacion">
+      <div
+        *ngFor="let precipitacion of probPrecipitacion"
+        class="item-precipitacion"
+      >
+        <mat-icon>cloud</mat-icon>
+        <span>{{ precipitacion.probabilidad }}%</span>
+        <span>{{ precipitacion.periodo }}</span>
+      </div>
+    </div>
+  </div>
+</mat-card>

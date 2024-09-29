@@ -35,44 +35,20 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; /
   providers: [{ provide: LOCALE_ID, useValue: 'es-ES' }],
 })
 export class PrediccionTiempoComponent {
-  isLoading: boolean = true; // Estado de carga para controlar el loader
-  municipios: Array<{ id: string; nombre: string }> = []; // Listado de municipios con id y nombre
-  filtroControl = new FormControl(''); // Control para el campo de búsqueda
-  municipiosFiltrados!: Observable<Array<{ id: string; nombre: string }>>; // Municipios filtradas para mostrar
-
-  municipioSeleccionado: { id: string; nombre: string } | null = null; // Municipios seleccionada con su id
-
+  cargando: boolean = true;
+  municipios: Array<{ id: string; nombre: string }> = [];
+  filtroControl = new FormControl('');
+  municipiosFiltrados!: Observable<Array<{ id: string; nombre: string }>>;
+  municipioSeleccionado: { id: string; nombre: string } | null = null;
   unidadTemperaturaSeleccionada = 'G_CEL';
   temperaturaMedia: number = 0;
-
-  fecha = formatDate(new Date(), 'EEEE, dd MMMM yyyy', 'es-ES'); // Formateo en español
-
-  probPrecipitacion: Array<ProbPrecipitacion> = []; // Para almacenar la probabilidad de precipitación
+  fecha = formatDate(new Date(), 'EEEE, dd MMMM yyyy', 'es-ES');
+  probPrecipitacion: Array<ProbPrecipitacion> = [];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.getAllMunicipios();
-  }
-
-  private getAllMunicipios(): void {
-    this.isLoading = true;
-    this.http
-      .get<{ id: string; nombre: string }[]>('/api/municipios')
-      .subscribe(
-        (data) => {
-          this.municipios = data; // Guardamos los datos recibidos
-          this.municipiosFiltrados = this.filtroControl.valueChanges.pipe(
-            startWith(''),
-            map((valor) => this.filtrarMunicipios(valor || ''))
-          );
-          this.isLoading = false;
-        },
-        (error) => {
-          console.error('Error al obtener las municipios', error);
-          this.isLoading = false;
-        }
-      );
   }
 
   // Método para seleccionar una municipio y guardar su id
@@ -82,10 +58,33 @@ export class PrediccionTiempoComponent {
     this.getPrediccionTiempoDiaSiguiente();
   }
 
+  // Método para controlar el cambios de la variable de temperatura
   onTemperatureChange() {
     if (!!this.municipioSeleccionado) {
       this.getPrediccionTiempoDiaSiguiente();
     }
+  }
+
+  // Servicio obtencion de todos los municipios
+  private getAllMunicipios(): void {
+    this.cargando = true;
+    this.http
+      .get<{ id: string; nombre: string }[]>('/api/municipios')
+      .subscribe(
+        (data) => {
+          this.municipios = data;
+          // Filtamos todos los municipos obtenidos
+          this.municipiosFiltrados = this.filtroControl.valueChanges.pipe(
+            startWith(''),
+            map((valor) => this.filtrarMunicipios(valor || ''))
+          );
+          this.cargando = false;
+        },
+        (error) => {
+          console.error('Error al obtener las municipios', error);
+          this.cargando = false;
+        }
+      );
   }
 
   // Método para filtrar las municipios por nombre
@@ -94,15 +93,16 @@ export class PrediccionTiempoComponent {
   ): Array<{ id: string; nombre: string }> {
     const valorFiltrado = valor;
     return this.municipios.filter((municipio) =>
-      municipio.nombre.toLocaleUpperCase().includes(valorFiltrado)
+      municipio.nombre.toUpperCase().includes(valorFiltrado.toUpperCase())
     );
   }
 
+  // Servicio obtención de la prediccion para el dia siguiente
   private getPrediccionTiempoDiaSiguiente() {
     // Crear los parámetros de la URL
     let params = new HttpParams();
 
-    this.isLoading = true;
+    this.cargando = true;
 
     // Solo agrega los parámetros si no son undefined
     if (!!this.municipioSeleccionado?.id) {
@@ -122,14 +122,14 @@ export class PrediccionTiempoComponent {
       (respuesta) => {
         this.probPrecipitacion = respuesta.probPrecipitacion;
         this.temperaturaMedia = respuesta.mediaTemperatura;
-        this.isLoading = false;
+        this.cargando = false;
       },
       (error) => {
         console.error(
           'Error al obtener la predición del tiempo para mañana',
           error
         );
-        this.isLoading = false;
+        this.cargando = false;
       }
     );
   }

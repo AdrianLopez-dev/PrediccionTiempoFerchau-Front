@@ -37,11 +37,11 @@
   </div>
 
   <!-- Loader que se muestra mientras se cargan los datos -->
-  <div *ngIf="isLoading" class="spinner-container">
+  <div *ngIf="cargando" class="spinner-container">
     <mat-spinner></mat-spinner>
   </div>
 
-  <div *ngIf="!!municipioSeleccionado && !isLoading">
+  <div *ngIf="!!municipioSeleccionado && !cargando">
     <!-- Información del clima -->
     <div class="informacion-tiempo">
       <h2>{{ municipioSeleccionado?.nombre }}</h2>
@@ -62,7 +62,7 @@
         class="item-precipitacion"
       >
         <mat-icon>cloud</mat-icon>
-        <span>{{ precipitacion.probabilidad }}%</span>
+        <span>{{ precipitacion.value }}%</span>
         <span>{{ precipitacion.periodo }}</span>
       </div>
     </div>

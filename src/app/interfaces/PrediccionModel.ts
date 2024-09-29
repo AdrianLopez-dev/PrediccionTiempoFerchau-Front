@@ -5,6 +5,6 @@ export interface Prediccion {
 }
 
 export interface ProbPrecipitacion {
-  probabilidad: number;
+  value: number;
   periodo: string;
 }
